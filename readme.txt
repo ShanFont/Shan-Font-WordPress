@@ -1,5 +1,3 @@
-# Shan Font WordPress Plugin
-
 === Shan Font ===
 Contributors: yoddev, taidev
 Tags: font, shan, typography, myanmar, tai
@@ -84,6 +82,3 @@ No, all Shan font files are included with the plugin.
 
 = 1.0.0 =
 Initial release of Shan Font plugin.
-
-## License
-This plugin is licensed under the GPLv2 or later.

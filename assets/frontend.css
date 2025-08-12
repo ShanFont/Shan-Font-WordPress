@@ -1,0 +1,108 @@
+/* Shan Font Frontend Styles */
+
+/* Global font application for Shan Font */
+.shan-font-enabled body,
+.shan-font-enabled p,
+.shan-font-enabled h1,
+.shan-font-enabled h2,
+.shan-font-enabled h3,
+.shan-font-enabled h4,
+.shan-font-enabled h5,
+.shan-font-enabled h6,
+.shan-font-enabled div,
+.shan-font-enabled span,
+.shan-font-enabled a,
+.shan-font-enabled li,
+.shan-font-enabled td,
+.shan-font-enabled th,
+.shan-font-enabled input,
+.shan-font-enabled textarea,
+.shan-font-enabled select,
+.shan-font-enabled button {
+    font-family: "Shan", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif !important;
+}
+
+/* Specific weight classes for custom selection */
+.shan-font-light {
+    font-family: "Shan", sans-serif;
+    font-weight: 100;
+}
+
+.shan-font-light-italic {
+    font-family: "Shan", sans-serif;
+    font-weight: 100;
+    font-style: italic;
+}
+
+.shan-font-regular {
+    font-family: "Shan", sans-serif;
+    font-weight: 400;
+}
+
+.shan-font-regular-italic {
+    font-family: "Shan", sans-serif;
+    font-weight: 400;
+    font-style: italic;
+}
+
+.shan-font-bold {
+    font-family: "Shan", sans-serif;
+    font-weight: 700;
+}
+
+.shan-font-bold-italic {
+    font-family: "Shan", sans-serif;
+    font-weight: 700;
+    font-style: italic;
+}
+
+.shan-font-black {
+    font-family: "Shan", sans-serif;
+    font-weight: 900;
+}
+
+.shan-font-black-italic {
+    font-family: "Shan", sans-serif;
+    font-weight: 900;
+    font-style: italic;
+}
+
+/* Ensure proper rendering for Shan script */
+.shan-text,
+[lang="shn"] {
+    font-family: "Shan", sans-serif;
+    line-height: 1.6;
+    text-rendering: optimizeLegibility;
+    -webkit-font-feature-settings: "liga", "kern";
+    font-feature-settings: "liga", "kern";
+}
+
+/* Improved readability for Shan text */
+.shan-content {
+    font-family: "Shan", sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+    letter-spacing: 0.01em;
+}
+
+/* Responsive font sizes for Shan text */
+@media (max-width: 768px) {
+    .shan-content {
+        font-size: 15px;
+        line-height: 1.6;
+    }
+}
+
+@media (max-width: 480px) {
+    .shan-content {
+        font-size: 14px;
+        line-height: 1.5;
+    }
+}
+
+/* Print styles */
+@media print {
+    body, p, h1, h2, h3, h4, h5, h6, div, span, a, li, td, th {
+        font-family: "Shan", serif !important;
+    }
+}

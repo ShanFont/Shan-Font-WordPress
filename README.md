@@ -1,19 +1,7 @@
 # Shan Font WordPress Plugin
 
-A professional WordPress plugin that brings beautiful Shan typography to your website with flexible customization options and optimized performance.
+![Shan Font WordPress Plugin](https://shanfont.com/wp-content/uploads/2025/07/shan-font-in-wordpress-1248x702.jpg)
 
-## Plugin Information
-
-**Contributors:** yoddev, taidev  
-**Tags:** font, shan, typography, myanmar, tai, southeast-asia, language, localization  
-**Requires at least:** 5.0  
-**Tested up to:** 6.6  
-**Requires PHP:** 7.4  
-**Stable tag:** 1.0.0  
-**License:** GPLv2 or later  
-**License URI:** https://www.gnu.org/licenses/gpl-2.0.html
-
-## Description
 
 The Shan Font plugin enables seamless integration of authentic Shan typography into your WordPress website. Designed specifically for Shan-speaking communities and cultural organizations, this plugin offers three distinct font modes to match your specific needs.
 
@@ -40,15 +28,6 @@ The Shan Font plugin enables seamless integration of authentic Shan typography i
   - **Regular**: Regular + Italic
   - **Bold**: Bold + Bold Italic  
   - **Black**: Black + Black Italic
-
-### Perfect For
-
-- Shan language websites and blogs
-- Cultural heritage organizations
-- Educational institutions
-- News and media outlets
-- Government websites
-- Community forums and social platforms
 
 ## Installation
 

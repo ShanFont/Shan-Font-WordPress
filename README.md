@@ -1,89 +1,125 @@
 # Shan Font WordPress Plugin
 
-=== Shan Font ===
-Contributors: yoddev, taidev
-Tags: font, shan, typography, myanmar, tai
-Requires at least: 5.0
-Tested up to: 6.4
-Requires PHP: 7.4
-Stable tag: 1.0.0
-License: GPLv2 or later
-License URI: https://www.gnu.org/licenses/gpl-2.0.html
+A professional WordPress plugin that brings beautiful Shan typography to your website with flexible customization options and optimized performance.
 
-Easily apply Shan font to your WordPress website with customizable font options.
+## Plugin Information
 
-== Description ==
+**Contributors:** yoddev, taidev  
+**Tags:** font, shan, typography, myanmar, tai, southeast-asia, language, localization  
+**Requires at least:** 5.0  
+**Tested up to:** 6.6  
+**Requires PHP:** 7.4  
+**Stable tag:** 1.0.0  
+**License:** GPLv2 or later  
+**License URI:** https://www.gnu.org/licenses/gpl-2.0.html
 
-Shan Font is a WordPress plugin that allows you to easily apply beautiful Shan typography to your website. Perfect for websites serving Shan-speaking communities, this plugin offers flexible font management with three convenient modes.
+## Description
 
-**Features:**
+The Shan Font plugin enables seamless integration of authentic Shan typography into your WordPress website. Designed specifically for Shan-speaking communities and cultural organizations, this plugin offers three distinct font modes to match your specific needs.
 
-* **Theme Defaults**: Use your theme's original fonts with Shan font fallback
-* **Quick Setup**: Automatically apply Shan font to all text elements
-* **Custom Selection**: Choose specific font weights (Light, Regular, Bold, Black)
-* **Live Preview**: See how fonts look before applying
-* **Performance Optimized**: Only loads selected font weights
-* **Easy to Use**: Beautiful, modern admin interface
+### Key Features
 
-**Font Weights Available:**
-* Light (Thin + Thin Italic)
-* Regular (Regular + Italic) 
-* Bold (Bold + Bold Italic)
-* Black (Black + Black Italic)
+- **Three Font Modes:**
+  - **Theme Defaults**: Preserves your theme's fonts with Shan fallback support
+  - **Quick Setup**: Applies Shan fonts globally with one click
+  - **Custom Selection**: Granular control over specific font weights
 
-**Perfect for:**
-* Shan language websites
-* Cultural organizations
-* Educational institutions
-* News websites
-* Blogs and personal sites
+- **Performance Optimized:**
+  - Uses modern WOFF2 format for faster loading
+  - Implements `font-display: swap` for better user experience
+  - Loads only selected font weights to minimize bandwidth
 
-== Installation ==
+- **User Experience:**
+  - Live preview functionality
+  - Intuitive admin interface
+  - Mobile-responsive design
+  - Accessibility compliant
 
-1. Upload the plugin files to `/wp-content/plugins/shan-font/` directory
-2. Activate the plugin through the 'Plugins' screen in WordPress
-3. Go to 'Shan Font' in your admin menu to configure settings
-4. Choose your preferred font mode and save settings
+- **Complete Font Family:**
+  - **Light**: Thin + Thin Italic
+  - **Regular**: Regular + Italic
+  - **Bold**: Bold + Bold Italic  
+  - **Black**: Black + Black Italic
 
-== Frequently Asked Questions ==
+### Perfect For
 
-= What font formats are supported? =
+- Shan language websites and blogs
+- Cultural heritage organizations
+- Educational institutions
+- News and media outlets
+- Government websites
+- Community forums and social platforms
 
-The plugin uses modern WOFF2 format for optimal performance and broad browser support.
+## Installation
 
-= Will this slow down my website? =
+### Automatic Installation (Recommended)
+The easiest way to install Shan Font is directly from the official WordPress Plugin Repository:
 
-No! The plugin only loads the font weights you actually select, and uses font-display: swap for optimal loading performance.
+1. Log in to your WordPress admin dashboard
+2. Navigate to **Plugins > Add New**
+3. Search for "Shan Font" or visit: https://wordpress.org/plugins/shan-font/
+4. Click **Install Now** and then **Activate**
+5. Configure settings under **Appearance > Shan Font**
 
-= Can I use this with any theme? =
+### Alternative Installation Methods
 
-Yes! The plugin works with any WordPress theme. You can choose to use your theme's defaults or apply Shan fonts globally.
+#### From WordPress.org
+1. Visit https://wordpress.org/plugins/shan-font/
+2. Click **Download** to get the latest version
+3. In your WordPress admin, go to **Plugins > Add New > Upload Plugin**
+4. Choose the downloaded ZIP file and click **Install Now**
+5. Activate the plugin and configure settings
 
-= Do I need to upload font files? =
+#### Manual Installation
+1. Download the plugin from https://wordpress.org/plugins/shan-font/
+2. Extract and upload to `/wp-content/plugins/shan-font/` directory
+3. Activate through **Plugins** menu in WordPress
+4. Configure settings under **Appearance > Shan Font**
 
-No, all Shan font files are included with the plugin.
+## Configuration
 
-== Screenshots ==
+1. Go to **Appearance > Shan Font** in your admin menu
+2. Choose from three font modes:
+   - **Theme Defaults**: Keeps existing fonts, adds Shan support
+   - **Quick Setup**: Applies Shan fonts site-wide instantly
+   - **Custom Selection**: Choose specific weights and styles
+3. Use the live preview to test different combinations
+4. Save your settings and view your website
 
-1. Main plugin interface with three font modes
-2. Custom selection mode with weight options
-3. Live preview showing different font weights
-4. Frontend display with Shan font applied
+## Technical Specifications
 
-== Changelog ==
+- **Font Format**: WOFF2 (with WOFF fallback)
+- **Browser Support**: All modern browsers (IE11+)
+- **PHP Compatibility**: 7.4 - 8.3
+- **WordPress Compatibility**: 5.0 - 6.6+
+- **Multisite Compatible**: Yes
+- **Translation Ready**: Yes
 
-= 1.0.0 =
-* Initial release
-* Three font modes: Theme Defaults, Quick Setup, Custom Selection
-* Four font weights: Light, Regular, Bold, Black
-* Live preview functionality
-* Modern admin interface
-* Performance optimized font loading
+## Frequently Asked Questions
 
-== Upgrade Notice ==
+**Q: Will this plugin slow down my website?**  
+A: No! The plugin is performance-optimized and only loads selected font weights. It uses modern loading techniques and font-display: swap for optimal performance.
 
-= 1.0.0 =
-Initial release of Shan Font plugin.
+**Q: Can I use this with any WordPress theme?**  
+A: Absolutely! The plugin is designed to work with any properly coded WordPress theme. The "Theme Defaults" mode ensures compatibility.
 
-## License
-This plugin is licensed under the GPLv2 or later.
+**Q: Do I need to upload font files manually?**  
+A: No, all necessary Shan font files are included with the plugin installation.
+
+**Q: Is the plugin translation-ready?**  
+A: Yes, the plugin includes translation files and follows WordPress internationalization standards.
+
+**Q: Can I customize which elements use Shan fonts?**  
+A: Yes, the "Custom Selection" mode allows granular control over font weights and application.
+
+## Development
+
+### Requirements
+- Node.js 16+
+- WordPress development environment
+- PHP 7.4+
+
+### Building
+```bash
+npm install
+npm run build

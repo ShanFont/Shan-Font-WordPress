@@ -2,6 +2,8 @@
 
 English-to-Shan translation platform for collecting reviewed parallel text. The app does not train or host a model.
 
+This directory is the project root. It is not part of the Shan Font WordPress plugin.
+
 ## Local run
 
 PostgreSQL 16 is required. Docker Compose is provided; any local Postgres with the same URL also works.

@@ -1,0 +1,30 @@
+{
+  "name": "shan-ai-translation",
+  "private": true,
+  "version": "0.1.0",
+  "packageManager": "pnpm@10.33.3",
+  "scripts": {
+    "dev": "pnpm run --parallel dev",
+    "build": "pnpm -r --if-present build",
+    "typecheck": "pnpm -r --if-present typecheck",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "test": "vitest run --config vitest.unit.config.ts",
+    "test:integration": "vitest run --config vitest.integration.config.ts",
+    "test:e2e": "playwright test",
+    "db:migrate": "pnpm --filter @sat/database migrate",
+    "db:seed": "pnpm --filter @sat/database seed",
+    "db:generate": "pnpm --filter @sat/database generate",
+    "openapi": "pnpm --filter @sat/api openapi"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.9.4",
+    "@playwright/test": "^1.55.0",
+    "exceljs": "^4.4.0",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

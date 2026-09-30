@@ -1,0 +1,377 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Shan AI Translation API",
+    "version": "0.1.0",
+    "description": "Contributor and admin API. Browsers call it through the Next.js /api proxy."
+  },
+  "servers": [
+    {
+      "url": "/api/v1"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "type": "http",
+        "scheme": "bearer"
+      },
+      "cookie": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "sat_session"
+      }
+    }
+  },
+  "security": [
+    {
+      "bearer": []
+    },
+    {
+      "cookie": []
+    }
+  ],
+  "paths": {
+    "/health": {
+      "get": {
+        "summary": "Health",
+        "security": []
+      }
+    },
+    "/auth/register": {
+      "post": {
+        "summary": "Register with email and password",
+        "security": []
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "summary": "Login",
+        "security": []
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "summary": "Logout"
+      }
+    },
+    "/auth/verify-email": {
+      "post": {
+        "summary": "Verify email",
+        "security": []
+      }
+    },
+    "/auth/forgot-password": {
+      "post": {
+        "summary": "Request password reset",
+        "security": []
+      }
+    },
+    "/auth/reset-password": {
+      "post": {
+        "summary": "Reset password",
+        "security": []
+      }
+    },
+    "/auth/google": {
+      "get": {
+        "summary": "Google OAuth configuration",
+        "security": []
+      }
+    },
+    "/me": {
+      "get": {
+        "summary": "Current account"
+      }
+    },
+    "/me/profile": {
+      "patch": {
+        "summary": "Update profile and private contact preferences"
+      }
+    },
+    "/me/dashboard": {
+      "get": {
+        "summary": "Contributor dashboard"
+      }
+    },
+    "/guide": {
+      "get": {
+        "summary": "Current translation guide"
+      }
+    },
+    "/terms": {
+      "get": {
+        "summary": "Current contribution terms",
+        "security": []
+      }
+    },
+    "/terms/acceptances": {
+      "post": {
+        "summary": "Accept current terms"
+      }
+    },
+    "/assignments": {
+      "post": {
+        "summary": "Claim a random sentence or page"
+      }
+    },
+    "/assignments/{id}": {
+      "get": {
+        "summary": "Assignment details"
+      }
+    },
+    "/assignments/{id}/draft": {
+      "put": {
+        "summary": "Save a draft"
+      }
+    },
+    "/assignments/{id}/skip": {
+      "post": {
+        "summary": "Skip an assignment"
+      }
+    },
+    "/assignments/{id}/submit": {
+      "post": {
+        "summary": "Submit a translation"
+      }
+    },
+    "/me/translations": {
+      "get": {
+        "summary": "Own translation history"
+      }
+    },
+    "/me/translations/{id}": {
+      "get": {
+        "summary": "Own translation detail"
+      }
+    },
+    "/me/earnings": {
+      "get": {
+        "summary": "Own earnings"
+      }
+    },
+    "/me/payouts": {
+      "get": {
+        "summary": "Own payouts"
+      }
+    },
+    "/reports": {
+      "post": {
+        "summary": "Report unsuitable source text"
+      }
+    },
+    "/community/stats": {
+      "get": {
+        "summary": "Public project stats",
+        "security": []
+      }
+    },
+    "/community/leaderboard": {
+      "get": {
+        "summary": "Opt-in leaderboard",
+        "security": []
+      }
+    },
+    "/admin/dashboard": {
+      "get": {
+        "summary": "Admin dashboard"
+      }
+    },
+    "/admin/categories": {
+      "get": {
+        "summary": "List categories"
+      },
+      "post": {
+        "summary": "Create category"
+      }
+    },
+    "/admin/categories/{id}": {
+      "patch": {
+        "summary": "Update category"
+      }
+    },
+    "/admin/imports/template": {
+      "get": {
+        "summary": "Download import template"
+      }
+    },
+    "/admin/imports": {
+      "post": {
+        "summary": "Upload an xlsx import"
+      }
+    },
+    "/admin/imports/{id}": {
+      "get": {
+        "summary": "Import preview"
+      }
+    },
+    "/admin/imports/{id}/validate": {
+      "post": {
+        "summary": "Validate a mapped sheet"
+      }
+    },
+    "/admin/imports/{id}/commit": {
+      "post": {
+        "summary": "Enqueue import commit",
+        "responses": {
+          "202": {
+            "description": "Queued"
+          }
+        }
+      }
+    },
+    "/admin/tasks": {
+      "get": {
+        "summary": "List tasks"
+      }
+    },
+    "/admin/tasks/{id}/actions": {
+      "post": {
+        "summary": "Return, pause, archive, release, replace, or exclude"
+      }
+    },
+    "/admin/users": {
+      "get": {
+        "summary": "User directory"
+      }
+    },
+    "/admin/users/{id}": {
+      "patch": {
+        "summary": "Update a user"
+      }
+    },
+    "/admin/users/{id}/translations": {
+      "get": {
+        "summary": "A contributor history"
+      }
+    },
+    "/admin/reviews": {
+      "get": {
+        "summary": "Review queue"
+      }
+    },
+    "/admin/reviews/bulk-preview": {
+      "post": {
+        "summary": "Preview bulk review"
+      }
+    },
+    "/admin/reviews/bulk-confirm": {
+      "post": {
+        "summary": "Confirm bulk review"
+      }
+    },
+    "/admin/reviews/{revisionId}/decision": {
+      "post": {
+        "summary": "Approve, deny, or request edits"
+      }
+    },
+    "/admin/rates": {
+      "get": {
+        "summary": "Rate rules"
+      },
+      "post": {
+        "summary": "Create a future rate"
+      }
+    },
+    "/admin/payout-periods": {
+      "get": {
+        "summary": "Payout periods"
+      }
+    },
+    "/admin/payout-periods/prepare": {
+      "post": {
+        "summary": "Enqueue payout preparation",
+        "responses": {
+          "202": {
+            "description": "Queued"
+          }
+        }
+      }
+    },
+    "/admin/payouts": {
+      "get": {
+        "summary": "Payout queue"
+      }
+    },
+    "/admin/payouts/{id}/confirm": {
+      "post": {
+        "summary": "Confirm a manual payment"
+      }
+    },
+    "/admin/earnings/{id}/adjustments": {
+      "post": {
+        "summary": "Adjust an earning"
+      }
+    },
+    "/admin/exports": {
+      "get": {
+        "summary": "List exports"
+      },
+      "post": {
+        "summary": "Enqueue an export",
+        "responses": {
+          "202": {
+            "description": "Queued"
+          }
+        }
+      }
+    },
+    "/admin/exports/{id}": {
+      "get": {
+        "summary": "Export status"
+      }
+    },
+    "/admin/exports/{id}/download": {
+      "get": {
+        "summary": "Signed download URL"
+      }
+    },
+    "/admin/audit-events": {
+      "get": {
+        "summary": "Audit trail"
+      }
+    },
+    "/admin/guide-versions": {
+      "get": {
+        "summary": "Guide versions"
+      },
+      "post": {
+        "summary": "Publish a guide"
+      }
+    },
+    "/admin/terms-versions": {
+      "get": {
+        "summary": "Terms versions"
+      },
+      "post": {
+        "summary": "Publish terms"
+      }
+    },
+    "/admin/jobs": {
+      "get": {
+        "summary": "Background jobs"
+      }
+    },
+    "/admin/jobs/{id}/retry": {
+      "post": {
+        "summary": "Retry a failed job"
+      }
+    },
+    "/admin/reports": {
+      "get": {
+        "summary": "Source reports"
+      }
+    },
+    "/admin/reports/{id}/resolve": {
+      "post": {
+        "summary": "Resolve a report"
+      }
+    },
+    "/storage/download": {
+      "get": {
+        "summary": "Download a signed private file",
+        "security": []
+      }
+    }
+  }
+}

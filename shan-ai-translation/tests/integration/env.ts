@@ -1,0 +1,10 @@
+process.env.DATABASE_URL = 'postgresql://sat:sat@127.0.0.1:5432/shan_translation_test';
+process.env.AUTH_MODE = 'local';
+process.env.JWT_SECRET = 'test-secret';
+process.env.DEV_EXPOSE_TOKENS = 'true';
+process.env.NODE_ENV = 'test';
+process.env.STORAGE_DRIVER = 'local';
+process.env.STORAGE_LOCAL_PATH = '/tmp/sat-test-storage';
+process.env.STORAGE_SIGNING_SECRET = 'test-storage';
+process.env.ADMIN_MFA_REQUIRED = 'false';
+process.env.WEB_ORIGIN = 'http://localhost:3000';

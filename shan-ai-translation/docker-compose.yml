@@ -1,0 +1,19 @@
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: sat
+      POSTGRES_PASSWORD: sat
+      POSTGRES_DB: shan_translation
+    ports:
+      - "5432:5432"
+    volumes:
+      - sat_pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sat -d shan_translation"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+volumes:
+  sat_pg:

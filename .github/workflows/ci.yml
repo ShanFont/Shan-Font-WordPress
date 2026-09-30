@@ -1,0 +1,60 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: sat
+          POSTGRES_PASSWORD: sat
+          POSTGRES_DB: shan_translation_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U sat -d shan_translation_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+    defaults:
+      run:
+        working-directory: shan-ai-translation
+    env:
+      DATABASE_URL: postgresql://sat:sat@127.0.0.1:5432/shan_translation_test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.33.3
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: shan-ai-translation/pnpm-lock.yaml
+      - run: pnpm install
+      - run: pnpm --filter @sat/database exec prisma migrate deploy
+      - run: pnpm test
+      - run: pnpm test:integration
+      - run: pnpm typecheck
+      - run: pnpm lint
+      - run: pnpm build
+      - run: pnpm db:seed
+        env:
+          ADMIN_EMAIL: admin@example.com
+          ADMIN_PASSWORD: password1234
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm test:e2e
+        env:
+          CI: "true"
+          DEV_EXPOSE_TOKENS: "true"
+          AUTH_MODE: local
+          ADMIN_MFA_REQUIRED: "false"
+          JWT_SECRET: test-secret
+          STORAGE_SIGNING_SECRET: test-storage
+          ADMIN_EMAIL: admin@example.com
+          ADMIN_PASSWORD: password1234

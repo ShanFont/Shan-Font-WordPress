@@ -1,0 +1,584 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  contributor
+  admin
+}
+
+enum AccountStatus {
+  active
+  suspended
+  disabled
+}
+
+enum ContactMethod {
+  phone
+  line
+  facebook
+  email
+  other
+}
+
+enum CategoryStatus {
+  active
+  paused
+  archived
+}
+
+enum TaskType {
+  sentence
+  page
+}
+
+enum TaskStatus {
+  available
+  assigned
+  submitted
+  needs_edit
+  approved
+  denied
+  paused
+  archived
+}
+
+enum AssignmentStatus {
+  active
+  submitted
+  needs_edit
+  expired
+  skipped
+  released
+  completed
+}
+
+enum ImportStatus {
+  uploaded
+  validated
+  committing
+  committed
+  failed
+}
+
+enum EarningStatus {
+  unpaid
+  scheduled
+  paid
+}
+
+enum PayoutPeriodStatus {
+  preparing
+  ready
+  closed
+}
+
+enum PayoutStatus {
+  scheduled
+  overdue
+  paid
+}
+
+enum ReviewDecisionType {
+  approve
+  deny
+  needs_edit
+}
+
+enum ReportStatus {
+  open
+  resolved
+  dismissed
+}
+
+enum DatasetStatus {
+  queued
+  running
+  ready
+  failed
+}
+
+enum DatasetSplit {
+  train
+  dev
+  test
+  na
+}
+
+model User {
+  id                     String        @id @default(uuid()) @db.Uuid
+  authSubject            String        @unique @map("auth_subject")
+  pseudonym              String        @unique @default(uuid()) @db.Uuid
+  email                  String        @unique
+  displayName            String        @map("display_name")
+  role                   UserRole      @default(contributor)
+  status                 AccountStatus @default(active)
+  emailVerifiedAt        DateTime?     @map("email_verified_at") @db.Timestamptz(6)
+  passwordHash           String?       @map("password_hash")
+  emailVerifyTokenHash   String?       @map("email_verify_token_hash")
+  emailVerifyExpiresAt   DateTime?     @map("email_verify_expires_at") @db.Timestamptz(6)
+  passwordResetTokenHash String?       @map("password_reset_token_hash")
+  passwordResetExpiresAt DateTime?     @map("password_reset_expires_at") @db.Timestamptz(6)
+  createdAt              DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt              DateTime      @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  profile             Profile?
+  termsAcceptances    TermsAcceptance[]
+  assignments         Assignment[]
+  reviewDecisions     ReviewDecision[]
+  earningEntries      EarningEntry[]      @relation("EarningContributor")
+  earningAdjustments  EarningAdjustment[] @relation("AdjustmentAdmin")
+  payouts             Payout[]
+  paymentRecords      PaymentRecord[]
+  reports             Report[]            @relation("ReportContributor")
+  resolvedReports     Report[]            @relation("ReportResolver")
+  auditEvents         AuditEvent[]
+  idempotencyRecords  IdempotencyRecord[]
+  guideVersions       GuideVersion[]
+  termsVersions       TermsVersion[]
+  importBatches       ImportBatch[]
+  datasetReleases     DatasetRelease[]
+
+  @@map("users")
+}
+
+model Profile {
+  userId            String        @id @map("user_id") @db.Uuid
+  contactMethod     ContactMethod @default(email) @map("contact_method")
+  contactValue      String        @default("") @map("contact_value")
+  leaderboardOptIn  Boolean       @default(false) @map("leaderboard_opt_in")
+  user              User          @relation(fields: [userId], references: [id])
+
+  @@map("profiles")
+}
+
+model TermsVersion {
+  id          String   @id @default(uuid()) @db.Uuid
+  version     String   @unique
+  title       String
+  content     String
+  isCurrent   Boolean  @default(false) @map("is_current")
+  createdById String?  @map("created_by_id") @db.Uuid
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  createdBy   User?    @relation(fields: [createdById], references: [id])
+  acceptances TermsAcceptance[]
+
+  @@map("terms_versions")
+}
+
+model TermsAcceptance {
+  id         String       @id @default(uuid()) @db.Uuid
+  userId     String       @map("user_id") @db.Uuid
+  versionId  String       @map("version_id") @db.Uuid
+  acceptedAt DateTime     @default(now()) @map("accepted_at") @db.Timestamptz(6)
+  user       User         @relation(fields: [userId], references: [id])
+  version    TermsVersion @relation(fields: [versionId], references: [id])
+
+  @@unique([userId, versionId])
+  @@map("terms_acceptances")
+}
+
+model GuideVersion {
+  id          String   @id @default(uuid()) @db.Uuid
+  version     String   @unique
+  title       String
+  content     String
+  isCurrent   Boolean  @default(false) @map("is_current")
+  createdById String?  @map("created_by_id") @db.Uuid
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  createdBy   User?    @relation(fields: [createdById], references: [id])
+  assignments Assignment[]
+
+  @@map("guide_versions")
+}
+
+model Category {
+  id          String         @id @default(uuid()) @db.Uuid
+  name        String
+  description String         @default("")
+  status      CategoryStatus @default(active)
+  createdAt   DateTime       @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime       @updatedAt @map("updated_at") @db.Timestamptz(6)
+  documents   SourceDocument[]
+  tasks       Task[]
+  batches     ImportBatch[]
+
+  @@map("categories")
+}
+
+model FileAsset {
+  id          String   @id @default(uuid()) @db.Uuid
+  objectKey   String   @unique @map("object_key")
+  checksum    String
+  sizeBytes   Int      @map("size_bytes")
+  contentType String   @map("content_type")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  importBatches ImportBatch[]
+  receipts    PaymentRecord[]
+  releases    DatasetRelease[]
+
+  @@map("file_assets")
+}
+
+model ImportBatch {
+  id            String       @id @default(uuid()) @db.Uuid
+  categoryId    String       @map("category_id") @db.Uuid
+  fileAssetId   String       @map("file_asset_id") @db.Uuid
+  taskType      TaskType     @map("task_type")
+  sheetName     String?      @map("sheet_name")
+  columnMapping Json?        @map("column_mapping")
+  provenance    String
+  permissionRef String       @map("permission_ref")
+  status        ImportStatus @default(uploaded)
+  errorSummary  String?      @map("error_summary")
+  createdById   String       @map("created_by_id") @db.Uuid
+  createdAt     DateTime     @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt     DateTime     @updatedAt @map("updated_at") @db.Timestamptz(6)
+  category      Category     @relation(fields: [categoryId], references: [id])
+  fileAsset     FileAsset    @relation(fields: [fileAssetId], references: [id])
+  createdBy     User         @relation(fields: [createdById], references: [id])
+  rows          ImportRow[]
+  tasks         Task[]
+
+  @@map("import_batches")
+}
+
+model ImportRow {
+  id               String      @id @default(uuid()) @db.Uuid
+  batchId          String      @map("batch_id") @db.Uuid
+  rowNumber        Int         @map("row_number")
+  externalId       String      @default("") @map("external_id")
+  sourceText       String      @default("") @map("source_text")
+  context          String?
+  documentKey      String?     @map("document_key")
+  topic            String?
+  sourceReference  String?     @map("source_reference")
+  validationStatus String      @map("validation_status")
+  messages         Json
+  batch            ImportBatch @relation(fields: [batchId], references: [id])
+
+  @@unique([batchId, rowNumber])
+  @@index([batchId, externalId])
+  @@map("import_rows")
+}
+
+model SourceDocument {
+  id            String   @id @default(uuid()) @db.Uuid
+  categoryId    String   @map("category_id") @db.Uuid
+  externalKey   String   @map("external_key")
+  title         String?
+  provenance    String
+  permissionRef String   @map("permission_ref")
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  category      Category @relation(fields: [categoryId], references: [id])
+  tasks         Task[]
+
+  @@unique([categoryId, externalKey])
+  @@map("source_documents")
+}
+
+model Task {
+  id                  String     @id @default(uuid()) @db.Uuid
+  categoryId          String     @map("category_id") @db.Uuid
+  batchId             String?    @map("batch_id") @db.Uuid
+  documentId          String?    @map("document_id") @db.Uuid
+  externalId          String     @map("external_id")
+  type                TaskType
+  englishText         String     @map("english_text")
+  context             String?
+  topic               String?
+  wordCount           Int        @map("word_count")
+  sourceHash          String     @map("source_hash")
+  provenanceOverride  String?    @map("provenance_override")
+  permissionOverride  String?    @map("permission_override")
+  status              TaskStatus @default(available)
+  replacesTaskId      String?    @map("replaces_task_id") @db.Uuid
+  excludedFromDataset Boolean    @default(false) @map("excluded_from_dataset")
+  exclusionReason     String?    @map("exclusion_reason")
+  createdAt           DateTime   @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt           DateTime   @updatedAt @map("updated_at") @db.Timestamptz(6)
+  category            Category   @relation(fields: [categoryId], references: [id])
+  batch               ImportBatch? @relation(fields: [batchId], references: [id])
+  document            SourceDocument? @relation(fields: [documentId], references: [id])
+  replaces            Task?      @relation("TaskReplacement", fields: [replacesTaskId], references: [id])
+  replacedBy          Task[]     @relation("TaskReplacement")
+  assignments         Assignment[]
+  earning             EarningEntry?
+  reports             Report[]
+
+  @@unique([categoryId, externalId])
+  @@index([status, type])
+  @@index([sourceHash])
+  @@map("tasks")
+}
+
+model RateRule {
+  id           String   @id @default(uuid()) @db.Uuid
+  taskType     TaskType @map("task_type")
+  amountSatang Int      @map("amount_satang")
+  effectiveAt  DateTime @map("effective_at") @db.Timestamptz(6)
+  createdById  String?  @map("created_by_id") @db.Uuid
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  assignments  Assignment[]
+
+  @@index([taskType, effectiveAt])
+  @@map("rate_rules")
+}
+
+model Assignment {
+  id             String           @id @default(uuid()) @db.Uuid
+  taskId         String           @map("task_id") @db.Uuid
+  contributorId  String           @map("contributor_id") @db.Uuid
+  status         AssignmentStatus @default(active)
+  expiresAt      DateTime         @map("expires_at") @db.Timestamptz(6)
+  rateRuleId     String           @map("rate_rule_id") @db.Uuid
+  rateSatang     Int              @map("rate_satang")
+  guideVersionId String           @map("guide_version_id") @db.Uuid
+  createdAt      DateTime         @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt      DateTime         @updatedAt @map("updated_at") @db.Timestamptz(6)
+  task           Task             @relation(fields: [taskId], references: [id])
+  contributor    User             @relation(fields: [contributorId], references: [id])
+  rateRule       RateRule         @relation(fields: [rateRuleId], references: [id])
+  guideVersion   GuideVersion     @relation(fields: [guideVersionId], references: [id])
+  draft          Draft?
+  revisions      TranslationRevision[]
+
+  @@index([contributorId, status])
+  @@index([expiresAt])
+  @@map("assignments")
+}
+
+model Draft {
+  id           String     @id @default(uuid()) @db.Uuid
+  assignmentId String     @unique @map("assignment_id") @db.Uuid
+  shanText     String     @map("shan_text")
+  version      Int        @default(1)
+  savedAt      DateTime   @map("saved_at") @db.Timestamptz(6)
+  assignment   Assignment @relation(fields: [assignmentId], references: [id])
+
+  @@map("drafts")
+}
+
+model TranslationRevision {
+  id                 String     @id @default(uuid()) @db.Uuid
+  assignmentId       String     @map("assignment_id") @db.Uuid
+  revisionNumber     Int        @map("revision_number")
+  shanText           String     @map("shan_text")
+  shanTextNormalized String     @map("shan_text_normalized")
+  submittedAt        DateTime   @default(now()) @map("submitted_at") @db.Timestamptz(6)
+  assignment         Assignment @relation(fields: [assignmentId], references: [id])
+  reviewDecision     ReviewDecision?
+  earning            EarningEntry?
+  datasetItems       DatasetItem[]
+
+  @@unique([assignmentId, revisionNumber])
+  @@map("translation_revisions")
+}
+
+model ReviewDecision {
+  id          String             @id @default(uuid()) @db.Uuid
+  revisionId  String             @unique @map("revision_id") @db.Uuid
+  adminId     String             @map("admin_id") @db.Uuid
+  decision    ReviewDecisionType
+  reason      String?
+  disposition String?
+  createdAt   DateTime           @default(now()) @map("created_at") @db.Timestamptz(6)
+  revision    TranslationRevision @relation(fields: [revisionId], references: [id])
+  admin       User               @relation(fields: [adminId], references: [id])
+
+  @@map("review_decisions")
+}
+
+model EarningEntry {
+  id            String        @id @default(uuid()) @db.Uuid
+  taskId        String        @unique @map("task_id") @db.Uuid
+  revisionId    String        @unique @map("revision_id") @db.Uuid
+  contributorId String        @map("contributor_id") @db.Uuid
+  amountSatang  Int           @map("amount_satang")
+  approvalDate  DateTime      @map("approval_date") @db.Timestamptz(6)
+  status        EarningStatus @default(unpaid)
+  task          Task          @relation(fields: [taskId], references: [id])
+  revision      TranslationRevision @relation(fields: [revisionId], references: [id])
+  contributor   User          @relation("EarningContributor", fields: [contributorId], references: [id])
+  adjustments   EarningAdjustment[]
+  payoutItems   PayoutItem[]
+
+  @@index([contributorId, status, approvalDate])
+  @@map("earning_entries")
+}
+
+model EarningAdjustment {
+  id             String       @id @default(uuid()) @db.Uuid
+  earningEntryId String       @map("earning_entry_id") @db.Uuid
+  amountSatang   Int          @map("amount_satang")
+  reason         String
+  adminId        String       @map("admin_id") @db.Uuid
+  createdAt      DateTime     @default(now()) @map("created_at") @db.Timestamptz(6)
+  earning        EarningEntry @relation(fields: [earningEntryId], references: [id])
+  admin          User         @relation("AdjustmentAdmin", fields: [adminId], references: [id])
+
+  @@map("earning_adjustments")
+}
+
+model PayoutPeriod {
+  id          String             @id @default(uuid()) @db.Uuid
+  periodStart DateTime           @map("period_start") @db.Timestamptz(6)
+  cutoffAt    DateTime           @map("cutoff_at") @db.Timestamptz(6)
+  dueAt       DateTime           @map("due_at") @db.Timestamptz(6)
+  status      PayoutPeriodStatus @default(ready)
+  createdAt   DateTime           @default(now()) @map("created_at") @db.Timestamptz(6)
+  payouts     Payout[]
+
+  @@unique([cutoffAt])
+  @@map("payout_periods")
+}
+
+model Payout {
+  id            String       @id @default(uuid()) @db.Uuid
+  contributorId String       @map("contributor_id") @db.Uuid
+  periodId      String       @map("period_id") @db.Uuid
+  amountSatang  Int          @map("amount_satang")
+  status        PayoutStatus @default(scheduled)
+  paymentMethod String?      @map("payment_method")
+  createdAt     DateTime     @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt     DateTime     @updatedAt @map("updated_at") @db.Timestamptz(6)
+  contributor   User         @relation(fields: [contributorId], references: [id])
+  period        PayoutPeriod @relation(fields: [periodId], references: [id])
+  items         PayoutItem[]
+  payment       PaymentRecord?
+
+  @@unique([contributorId, periodId])
+  @@index([status])
+  @@map("payouts")
+}
+
+model PayoutItem {
+  id             String       @id @default(uuid()) @db.Uuid
+  payoutId       String       @map("payout_id") @db.Uuid
+  earningEntryId String       @map("earning_entry_id") @db.Uuid
+  releasedAt     DateTime?    @map("released_at") @db.Timestamptz(6)
+  payout         Payout       @relation(fields: [payoutId], references: [id])
+  earning        EarningEntry @relation(fields: [earningEntryId], references: [id])
+
+  @@unique([payoutId, earningEntryId])
+  @@map("payout_items")
+}
+
+model PaymentRecord {
+  id             String    @id @default(uuid()) @db.Uuid
+  payoutId       String    @unique @map("payout_id") @db.Uuid
+  paidAt         DateTime  @map("paid_at") @db.Timestamptz(6)
+  adminId        String    @map("admin_id") @db.Uuid
+  reference      String
+  method         String
+  receiptAssetId String?   @map("receipt_asset_id") @db.Uuid
+  createdAt      DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  payout         Payout    @relation(fields: [payoutId], references: [id])
+  admin          User      @relation(fields: [adminId], references: [id])
+  receipt        FileAsset? @relation(fields: [receiptAssetId], references: [id])
+
+  @@map("payment_records")
+}
+
+model Report {
+  id            String       @id @default(uuid()) @db.Uuid
+  taskId        String       @map("task_id") @db.Uuid
+  contributorId String       @map("contributor_id") @db.Uuid
+  reason        String
+  status        ReportStatus @default(open)
+  resolution    String?
+  resolvedById  String?      @map("resolved_by_id") @db.Uuid
+  createdAt     DateTime     @default(now()) @map("created_at") @db.Timestamptz(6)
+  resolvedAt    DateTime?    @map("resolved_at") @db.Timestamptz(6)
+  task          Task         @relation(fields: [taskId], references: [id])
+  contributor   User         @relation("ReportContributor", fields: [contributorId], references: [id])
+  resolvedBy    User?        @relation("ReportResolver", fields: [resolvedById], references: [id])
+
+  @@index([status, createdAt])
+  @@map("reports")
+}
+
+model DatasetRelease {
+  id          String        @id @default(uuid()) @db.Uuid
+  version     String
+  format      String
+  filters     Json
+  split       Boolean       @default(true)
+  status      DatasetStatus @default(queued)
+  metadata    Json?
+  fileAssetId String?       @map("file_asset_id") @db.Uuid
+  error       String?
+  createdById String        @map("created_by_id") @db.Uuid
+  createdAt   DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime      @updatedAt @map("updated_at") @db.Timestamptz(6)
+  createdBy   User          @relation(fields: [createdById], references: [id])
+  fileAsset   FileAsset?    @relation(fields: [fileAssetId], references: [id])
+  items       DatasetItem[]
+
+  @@map("dataset_releases")
+}
+
+model DatasetItem {
+  id         String           @id @default(uuid()) @db.Uuid
+  releaseId  String           @map("release_id") @db.Uuid
+  taskId     String           @map("task_id") @db.Uuid
+  revisionId String           @map("revision_id") @db.Uuid
+  split      DatasetSplit
+  clusterKey String           @map("cluster_key")
+  metadata   Json
+  release    DatasetRelease   @relation(fields: [releaseId], references: [id])
+  revision   TranslationRevision @relation(fields: [revisionId], references: [id])
+
+  @@unique([releaseId, taskId])
+  @@map("dataset_items")
+}
+
+model AuditEvent {
+  id           String   @id @default(uuid()) @db.Uuid
+  actorId      String?  @map("actor_id") @db.Uuid
+  action       String
+  resourceType String   @map("resource_type")
+  resourceId   String?  @map("resource_id")
+  changes      Json?
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  actor        User?    @relation(fields: [actorId], references: [id])
+
+  @@index([createdAt])
+  @@map("audit_events")
+}
+
+model IdempotencyRecord {
+  id           String   @id @default(uuid()) @db.Uuid
+  actorId      String   @map("actor_id") @db.Uuid
+  route        String
+  key          String
+  requestHash  String   @map("request_hash")
+  statusCode   Int      @map("status_code")
+  responseBody Json     @map("response_body")
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  actor        User     @relation(fields: [actorId], references: [id])
+
+  @@unique([actorId, route, key])
+  @@map("idempotency_records")
+}
+
+model OutboxJob {
+  id          String   @id @default(uuid()) @db.Uuid
+  type        String
+  payload     Json
+  status      String   @default("pending")
+  attempts    Int      @default(0)
+  maxAttempts Int      @default(5) @map("max_attempts")
+  lastError   String?  @map("last_error")
+  runAt       DateTime @default(now()) @map("run_at") @db.Timestamptz(6)
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@index([status, runAt])
+  @@map("outbox_jobs")
+}

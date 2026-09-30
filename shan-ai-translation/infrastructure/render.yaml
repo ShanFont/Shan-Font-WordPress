@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: shan-translation-api
+    runtime: node
+    buildCommand: pnpm install && pnpm --filter @sat/database build && pnpm --filter @sat/api build
+    startCommand: pnpm --filter @sat/api start
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: AUTH_MODE
+        value: supabase
+      - key: ADMIN_MFA_REQUIRED
+        value: "true"
+  - type: worker
+    name: shan-translation-worker
+    runtime: node
+    buildCommand: pnpm install && pnpm --filter @sat/database build && pnpm --filter @sat/worker build
+    startCommand: pnpm --filter @sat/worker start
+    envVars:
+      - key: DATABASE_URL
+        sync: false

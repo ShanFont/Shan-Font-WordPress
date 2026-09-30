@@ -1,0 +1,18 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background: #f3efe7;
+  color: #1c1917;
+}
+
+.shan-editor {
+  font-family: "Noto Sans Myanmar", sans-serif;
+  font-size: 20px;
+  line-height: 1.8;
+}
+
+.nav-hidden .app-nav {
+  display: none;
+}
